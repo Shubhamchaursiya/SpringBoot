@@ -1,56 +1,56 @@
 package com.employeemanagement.service;
 
+import java.util.Collection;
+
 import com.employeemanagement.model.Employee;
-import com.employeemanagement.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.List;
-import java.util.Optional;
+public class EmployeeServiceImpl implements UserDetails {
 
-@Service
-public class EmployeeServiceImpl implements EmployeeService {
+	private Employee employee;
 
-	@Autowired
-	private EmployeeRepository employeeRepository;
-
-	@Override
-	public List<Employee> getAllEmployees() {
-		return employeeRepository.findAll();
+	public EmployeeServiceImpl(Employee employee) {
+		this.employee = employee;
 	}
 
 	@Override
-	public void saveEmployee(Employee employee) {
-		this.employeeRepository.save(employee);
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return null;
 	}
 
 	@Override
-	public Employee getEmployeeById(long id) {
-		Optional<Employee> optional = employeeRepository.findById(id);
-		Employee employee = null;
-		if (optional.isPresent()) {
-			employee = optional.get();
-		} else {
-			throw new RuntimeException(" Employee not found for id :: " + id);
-		}
-		return employee;
+	public String getPassword() {
+		return employee.getPassword();
 	}
 
 	@Override
-	public void deleteEmployeeById(long id) {
-		this.employeeRepository.deleteById(id);
+	public String getUsername() {
+		return employee.getEmail();
 	}
 
 	@Override
-	public Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
-		Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
-			Sort.by(sortField).descending();
-		
-		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
-		return this.employeeRepository.findAll(pageable);
+	public boolean isAccountNonExpired() {
+		return true;
 	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	public String getFullName() {
+		return employee.getFirstName() + " " + employee.getLastName();
+	}
+
 }

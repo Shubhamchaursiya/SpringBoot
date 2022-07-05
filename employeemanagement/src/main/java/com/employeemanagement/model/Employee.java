@@ -14,7 +14,11 @@ public class Employee {
 	@Id
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
 	private long id;
-	
+
+	@NotBlank(message = "Password must not be blank")
+	@Size(min = 5, message = "Password must be at least 5 characters long")
+	private String password;
+
 	@Column(name = "first_name")
 	@NotBlank(message = "First name must not be blank")
 	@Size(min = 3, message = "First name must be at least 3 characters long")
