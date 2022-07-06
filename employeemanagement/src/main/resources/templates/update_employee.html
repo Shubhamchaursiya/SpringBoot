@@ -12,7 +12,9 @@
 		<h1>Employee Management System</h1>
 		<hr>
 		<h2>Update Employee</h2>
-
+		<ul>
+			<li class= "alert alert-danger" role="alert" th:each="error : ${#fields.errors('employee.*')}" th:text="${error}"/>
+		</ul>
 		<form action="#" th:action="@{/saveEmployee}" th:object="${employee}"
 			method="POST">
 			

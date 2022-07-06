@@ -6,6 +6,7 @@ import com.employeemanagement.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,7 +62,7 @@ public class EmployeeController {
 		employee.setPassword(encodedPassword);
 		if(errors.hasErrors()) {
 			log.error("Add new employee form validation failed due to :"+ errors.toString());
-			return "new_employee.html";
+			return "update_employee.html";
 		}
 		employeeService.saveEmployee(employee);
 		return "redirect:/save";
@@ -100,6 +101,12 @@ public class EmployeeController {
 		model.addAttribute("sortDir", sortDir);
 		model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
 
+		model.addAttribute("listEmployees", listEmployees);
+		return "index";
+	}
+	@RequestMapping("/search")
+	public String viewHomePage(Model model, @Param("keyword") String keyword) {
+		List<Employee> listEmployees = employeeService.listAll(keyword);
 		model.addAttribute("listEmployees", listEmployees);
 		return "index";
 	}
